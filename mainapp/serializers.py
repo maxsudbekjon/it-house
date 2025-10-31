@@ -9,10 +9,12 @@ class TechnologySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CourseModuleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CourseModule
-        fields = '__all__'
+# class CourseModuleSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CourseModule
+#         fields = '__all__'
+
+
 
 
 class ModuleThemeSerializer(serializers.ModelSerializer):
@@ -21,14 +23,35 @@ class ModuleThemeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CourseModuleSerializer(serializers.ModelSerializer):
+    module_themes = ModuleThemeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CourseModule
+        fields = '__all__'   # ⬅️ no change here
+
+
+
 class CourseSerializer(serializers.ModelSerializer):
     course_modules = CourseModuleSerializer(many=True, read_only=True)
-    module_themes = ModuleThemeSerializer(many=True, read_only=True)
     technologies = TechnologySerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Course
         fields = '__all__'
+
+
+
+
+
+# class CourseSerializer(serializers.ModelSerializer):
+#     course_modules = CourseModuleSerializer(many=True, read_only=True)
+#     module_themes = ModuleThemeSerializer(many=True, read_only=True)
+#     technologies = TechnologySerializer(many=True, read_only=True)
+    
+#     class Meta:
+#         model = Course
+#         fields = '__all__'
 
 
 class CourseListSerializer(serializers.ModelSerializer):
