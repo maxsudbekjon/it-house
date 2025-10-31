@@ -79,7 +79,7 @@ class Teacher(BaseModel):
     bio_en = models.TextField()
     bio_ru = models.TextField()
     profession = models.CharField(max_length=25)
-    exprerience = models.PositiveIntegerField(help_text="Experience in years")
+    experience = models.PositiveIntegerField(help_text="Experience in years")
     company = models.CharField(max_length=25)
     total_students = models.PositiveIntegerField()
     total_projects = models.PositiveIntegerField()

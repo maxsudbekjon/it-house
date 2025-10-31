@@ -3,11 +3,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from mainapp.serializers import (CourseSerializer, TechnologySerializer,
                                  CourseModuleSerializer, ModuleThemeSerializer,
-                                    StatisticsSerializer, TeacherSerializer,
-                                    TeacherAchievementSerializer, TeacherSkillSerializer,
-                                    CourseListSerializer)
+                                TopStatisticsSerializer, MediumStatisticsSerializer,
+                                TeacherSerializer, TeacherAchievementSerializer,
+                                TeacherSkillSerializer, CourseListSerializer, NewsSerializer)
 from mainapp.models import (Course, Technology, CourseModule, ModuleTheme,
-                            Statistics, Teacher, TeacherAchievement, TeacherSkill)
+                            Statistics, Teacher, TeacherAchievement, TeacherSkill, News)
 
 
 
@@ -35,9 +35,14 @@ class ModuleThemeListView(ModelViewSet):
     serializer_class = ModuleThemeSerializer
 
 
-class StatisticsListView(ModelViewSet):
+class TopStatisticsListView(ModelViewSet):
     queryset = Statistics.objects.all()
-    serializer_class = StatisticsSerializer
+    serializer_class = TopStatisticsSerializer
+
+
+class MediumStatisticsListView(ModelViewSet):
+    queryset = Statistics.objects.all()
+    serializer_class = MediumStatisticsSerializer
 
 
 class TeacherListView(ModelViewSet):
@@ -53,3 +58,8 @@ class TeacherAchievementListView(ModelViewSet):
 class TeacherSkillListView(ModelViewSet):
     queryset = TeacherSkill.objects.all()
     serializer_class = TeacherSkillSerializer
+
+
+class NewsListView(ModelViewSet):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
