@@ -38,12 +38,12 @@ class ModuleThemeListView(ReadOnlyModelViewSet):
     serializer_class = ModuleThemeSerializer
 
 
-class TopStatisticsListView(ReadOnlyModelViewSet):
+class TopStatisticsListView(ListModelMixin, GenericViewSet):
     queryset = Statistics.objects.all()
     serializer_class = TopStatisticsSerializer
 
 
-class MediumStatisticsListView(ReadOnlyModelViewSet):
+class MediumStatisticsListView(ListModelMixin, GenericViewSet):
     queryset = Statistics.objects.all()
     serializer_class = MediumStatisticsSerializer
 
@@ -73,7 +73,7 @@ class NewsListView(ReadOnlyModelViewSet):
     serializer_class = NewsSerializer
 
 
-class CompanyListView(ReadOnlyModelViewSet):
+class CompanyListView(ListModelMixin, GenericViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 

@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-yc6p%p1luatnn=&z3zlaqz)502ezjhwa^&qmvxtbf96by$1(w+'
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback_key")
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = True # os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(" ")
 
@@ -121,9 +121,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # (ixtiyoriy, lekin foydali)
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static',
+# ]
 
 
 
