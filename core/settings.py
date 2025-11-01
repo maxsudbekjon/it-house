@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     #installed apps
     'drf_spectacular',
     'rest_framework',
-    'corsheaders',
+    # 'corsheaders',
     #local apps
     'mainapp',
     'corsheaders',  
