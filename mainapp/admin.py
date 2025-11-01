@@ -1,12 +1,13 @@
 from django.contrib import admin
 from mainapp.models import (Teacher, Course, CourseAbout, CourseModule,
                             Company, TeacherAchievement, TeacherSkill, Technology,
-                            ModuleTheme, Statistics, News, EducationAbout
+                            ModuleTheme, Statistics, News, EducationAbout, Status
 )
 
 # Register your models here.
 admin.site.register(Course)
 admin.site.register(Technology)
+admin.site.register(Status)
 admin.site.register(CourseModule)
 admin.site.register(CourseAbout)
 admin.site.register(ModuleTheme)

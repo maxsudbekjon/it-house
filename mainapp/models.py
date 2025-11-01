@@ -112,6 +112,15 @@ class TeacherSkill(BaseModel):
         return self.name_uz
     
 
+class Status(BaseModel):
+    name_uz = models.CharField(max_length=100)
+    name_en = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name_uz
+    
+
 class News(BaseModel):
     title_uz = models.CharField(max_length=255)
     title_en = models.CharField(max_length=255)
@@ -120,6 +129,7 @@ class News(BaseModel):
     description_en = models.TextField()
     description_ru = models.TextField()
     banner = models.ImageField(upload_to='news_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])])
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='news')
 
     def __str__(self):
         return self.title_uz
