@@ -14,7 +14,7 @@ router.register(r'teachers', TeacherDetailView, basename='teacher-detail')
 router.register(r'news', NewsListView, basename='news')
 router.register(r'companies', CompanyListView, basename='companies')
 router.register(r'education-about', EducationAboutView, basename='education-about')
-router.register(r'course-about', CourseAboutView, basename='course-about')
+router.register(r'course-about', CourseAboutView, basename='course-about')  
 
 urlpatterns = [
     path('course-list/', CourseListView.as_view(), name='course-list'),
