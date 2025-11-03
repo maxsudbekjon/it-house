@@ -85,7 +85,7 @@ class TeacherSerializer(serializers.ModelSerializer):
 class TeacherListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ['full_name', 'profession', 'photo', 'experience', 'company', 'linkedin_link', 'github_link']
+        fields = ['id', 'full_name', 'profession', 'photo', 'experience', 'company', 'linkedin_link', 'github_link']
 
 
 class NewsSerializer(serializers.ModelSerializer):
