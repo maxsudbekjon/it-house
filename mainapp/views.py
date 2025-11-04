@@ -58,16 +58,6 @@ class TeacherDetailView(RetrieveModelMixin, GenericViewSet):
     serializer_class = TeacherSerializer
 
 
-class TeacherAchievementListView(ReadOnlyModelViewSet):
-    queryset = TeacherAchievement.objects.all()
-    serializer_class = TeacherAchievementSerializer
-
-
-class TeacherSkillListView(ReadOnlyModelViewSet):
-    queryset = TeacherSkill.objects.all()
-    serializer_class = TeacherSkillSerializer
-
-
 class NewsListView(ReadOnlyModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer

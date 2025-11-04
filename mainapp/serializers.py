@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout,
+from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout, Status,
                             Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout)
 
 
@@ -74,8 +74,9 @@ class TeacherSkillSerializer(serializers.ModelSerializer):
 
 
 class TeacherSerializer(serializers.ModelSerializer):
-    teacher_achievements = TeacherAchievementSerializer(many=True, read_only=True)
-    teacher_skills = TeacherSkillSerializer(many=True, read_only=True)
+    achievements = TeacherAchievementSerializer(many=True, read_only=True)
+    skills = TeacherSkillSerializer(many=True, read_only=True)
+
 
     class Meta:
         model = Teacher
@@ -88,7 +89,14 @@ class TeacherListSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name', 'profession', 'photo', 'experience', 'company', 'linkedin_link', 'github_link']
 
 
+class StatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Status
+        fields = '__all__'
+
+
 class NewsSerializer(serializers.ModelSerializer):
+    status = StatusSerializer(read_only=True)
     class Meta:
         model = News
         fields = '__all__'
