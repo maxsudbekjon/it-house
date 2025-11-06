@@ -24,7 +24,7 @@ class ModuleThemeSerializer(serializers.ModelSerializer):
 
 
 class CourseModuleSerializer(serializers.ModelSerializer):
-    module_themes = ModuleThemeSerializer(many=True, read_only=True)
+    themes = ModuleThemeSerializer(many=True, read_only=True)
 
     class Meta:
         model = CourseModule
@@ -33,7 +33,7 @@ class CourseModuleSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    course_modules = CourseModuleSerializer(many=True, read_only=True)
+    modules = CourseModuleSerializer(many=True, read_only=True)
     technologies = TechnologySerializer(many=True, read_only=True)
 
     class Meta:
