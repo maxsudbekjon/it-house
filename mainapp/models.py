@@ -11,7 +11,7 @@ class BaseModel(models.Model):
 
 
 class Course(BaseModel):
-    banner = models.ImageField(upload_to='course_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])])
+    banner = models.ImageField(upload_to='course_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     title_uz = models.CharField(max_length=25)
     title_en = models.CharField(max_length=25)
     title_ru = models.CharField(max_length=25)
@@ -30,7 +30,7 @@ class Technology(BaseModel):
     name_uz = models.CharField(max_length=100)
     name_en = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
-    icon = models.ImageField(upload_to='technology_icons/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg'])])
+    icon = models.ImageField(upload_to='technology_icons/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='technologies')
     
     def __str__(self):
@@ -67,7 +67,7 @@ class Statistics(BaseModel):
 
 
 class Company(BaseModel):
-    logo = models.ImageField(upload_to='company_logos/', validators=[FileExtensionValidator(allowed_extensions=['png', 'svg'])])
+    logo = models.ImageField(upload_to='company_logos/', validators=[FileExtensionValidator(allowed_extensions=['png', 'svg', 'jpg', 'jpeg', 'webp'])])
     workers = models.PositiveIntegerField()
 
     def __str__(self):
@@ -83,7 +83,7 @@ class Teacher(BaseModel):
     company = models.CharField(max_length=25)
     total_students = models.PositiveIntegerField()
     total_projects = models.PositiveIntegerField()
-    photo = models.ImageField(upload_to='teacher_photos/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg'])])
+    photo = models.ImageField(upload_to='teacher_photos/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     github_link = models.URLField(blank=True, null=True)
     linkedin_link = models.URLField(blank=True, null=True)
     twitter_link = models.URLField(blank=True, null=True)
@@ -128,7 +128,7 @@ class News(BaseModel):
     description_uz = models.TextField()
     description_en = models.TextField()
     description_ru = models.TextField()
-    banner = models.ImageField(upload_to='news_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])])
+    banner = models.ImageField(upload_to='news_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='news')
 
     def __str__(self):
@@ -148,7 +148,7 @@ class CourseAbout(BaseModel):
 
 
 class EducationAbout(BaseModel):
-    icon = models.ImageField(upload_to='education_about_icons/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])])
+    icon = models.ImageField(upload_to='education_about_icons/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     title_uz = models.CharField(max_length=255)
     title_en = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
