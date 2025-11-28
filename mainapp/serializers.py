@@ -55,16 +55,10 @@ class CourseListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TopStatisticsSerializer(serializers.ModelSerializer):
+class StatisticsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statistics
-        fields = ['total_students', 'total_graduates', 'total_employed', 'avg_duration']
-
-
-class MediumStatisticsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Statistics
-        fields = ['total_employed', 'avg_start_salary', 'total_graduates', 'partners']
+        fields = '__all__'
 
     
 class TeacherAchievementSerializer(serializers.ModelSerializer):

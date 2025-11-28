@@ -5,7 +5,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet, ModelV
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from mainapp.serializers import (CourseSerializer, TechnologySerializer,
                                  CourseModuleSerializer, ModuleThemeSerializer,
-                                TopStatisticsSerializer, MediumStatisticsSerializer,
+                                StatisticsSerializer,
                                 TeacherSerializer, TeacherAchievementSerializer,
                                 TeacherSkillSerializer, CourseListSerializer, NewsSerializer,
                                 CompanySerializer, TeacherListSerializer, EducationAboutSerializer,
@@ -16,14 +16,35 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-class TopStatisticsListView(ModelViewSet):
+class StatisticsAPIView(APIView):
+    serializer_class = StatisticsSerializer
     queryset = Statistics.objects.all()
-    serializer_class = TopStatisticsSerializer
-
-
-class MediumStatisticsListView(ModelViewSet):
-    queryset = Statistics.objects.all()
-    serializer_class = MediumStatisticsSerializer
+    
+    def get(self, request):
+        statistics = self.queryset
+        serializer = self.serializer_class(statistics, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context = {'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def patch(self, request):
+        stat_id = request.data.get('id')
+        statistic = get_object_or_404(Statistics, id=stat_id)
+        serializer = self.serializer_class(statistic, data=request.data, context = {'request': request}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request):
+        stat_id = request.data.get('id')
+        statistic = get_object_or_404(Statistics, id=stat_id)
+        statistic.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 
 
 class NewsListView(ModelViewSet):

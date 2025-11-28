@@ -1,7 +1,6 @@
 from django.urls import path
 from mainapp.views import (
-    TopStatisticsListView,
-    MediumStatisticsListView,
+    StatisticsAPIView,
     NewsListView,
     CompanyListView,
     EducationAboutView,
@@ -18,9 +17,6 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register('top-statistics', TopStatisticsListView, basename='top-statistics')
-router.register('medium-statistics', MediumStatisticsListView, basename='medium-statistics')
-router.register('news', NewsListView, basename='news')
 router.register('company', CompanyListView, basename='company')
 router.register('education-about', EducationAboutView, basename='education-about')
 router.register('course-about', CourseAboutView, basename='course-about')
@@ -28,6 +24,7 @@ router.register('courses', CourseAPIView, basename='courses')
 router.register('teachers', TeacherAPIView, basename='teachers')
 
 urlpatterns = [
+    path('statistics/', StatisticsAPIView.as_view(), name='statistics'),
     path('technologies/<int:course_id>/', TechnologyAPIView.as_view(), name='technologies'),
     path('course-modules/<int:course_id>/', CourseModuleAPIView.as_view(), name='course-modules'),
     path('module-themes/<int:module_id>/', ModuleThemeAPIView.as_view(), name='module-themes'),
