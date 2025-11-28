@@ -21,6 +21,9 @@ class ModuleThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ModuleTheme
         fields = '__all__'
+        extra_kwargs = {
+            'module': {'read_only': True},
+        }
 
 
 class CourseModuleSerializer(serializers.ModelSerializer):
@@ -29,6 +32,9 @@ class CourseModuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseModule
         fields = '__all__'
+        extra_kwargs = {
+            'course': {'read_only': True},
+        }
 
 
 

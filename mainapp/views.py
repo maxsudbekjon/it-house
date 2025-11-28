@@ -80,6 +80,7 @@ class TechnologyAPIView(APIView):
 
 class CourseModuleAPIView(APIView):
     serializer_class = CourseModuleSerializer
+    queryset = CourseModule.objects.all()
     
     def post(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
@@ -107,6 +108,7 @@ class CourseModuleAPIView(APIView):
 
 class ModuleThemeAPIView(APIView):
     serializer_class = ModuleThemeSerializer
+    queryset = ModuleTheme.objects.all()
     
     def post(self, request, module_id):
         module = get_object_or_404(CourseModule, id=module_id)
