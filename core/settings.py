@@ -197,3 +197,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://api.ithouseedu.uz",
+    "https://ithouseedu.uz", # Agar kerak bo'lsa boshqalarini ham qo'shing
+]
