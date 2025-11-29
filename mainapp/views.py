@@ -99,9 +99,8 @@ class TechnologyAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
-class CourseModuleAPIView(APIView):
+class CourseModuleListAPIView(APIView):
     serializer_class = CourseModuleSerializer
-    queryset = CourseModule.objects.all()
     
     def post(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
@@ -110,24 +109,39 @@ class CourseModuleAPIView(APIView):
         serializer.save(course=course)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def patch(self, request, course_id):
+    def get(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
-        module_id = request.data.get('id')
+        moudels = CourseModule.objects.filter(course=course)
+        serializer = self.serializer_class(moudels, many=True, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class CourseModuleAPIView(APIView):
+    serializer_class = CourseModuleSerializer
+    queryset = CourseModule.objects.all()
+    
+    def get(self, request, course_id, module_id):
+        course = get_object_or_404(Course, id=course_id)
+        modules = get_object_or_404(CourseModule, id=module_id, course=course)
+        serializer = self.serializer_class(modules, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, course_id, module_id):
+        course = get_object_or_404(Course, id=course_id)
         module = get_object_or_404(CourseModule, id=module_id, course=course)
         serializer = self.serializer_class(module, data=request.data, context = {'request': request}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(course=course)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self, request, course_id):
+    def delete(self, request, course_id, module_id):
         course = get_object_or_404(Course, id=course_id)
-        module_id = request.data.get('id')
         module = get_object_or_404(CourseModule, id=module_id, course=course)
         module.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Module deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 
-class ModuleThemeAPIView(APIView):
+class ModuleThemeListAPIView(APIView):
     serializer_class = ModuleThemeSerializer
     queryset = ModuleTheme.objects.all()
     
@@ -138,18 +152,32 @@ class ModuleThemeAPIView(APIView):
         serializer.save(module=module)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def patch(self, request, module_id):
+    def get(self, request, module_id):
         module = get_object_or_404(CourseModule, id=module_id)
-        theme_id = request.data.get('id')
+        themes = ModuleTheme.objects.filter(module=module)
+        serializer = self.serializer_class(themes, many=True, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class ModuleThemeAPIView(APIView):
+    serializer_class = ModuleThemeSerializer
+    
+    def get(self, request, module_id, theme_id):
+        module = get_object_or_404(CourseModule, id=module_id)
+        theme = get_object_or_404(ModuleTheme, id=theme_id, module=module)
+        serializer = self.serializer_class(theme, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, module_id, theme_id):
+        module = get_object_or_404(CourseModule, id=module_id)
         theme = get_object_or_404(ModuleTheme, id=theme_id, module=module)
         serializer = self.serializer_class(theme, data=request.data, context = {'request': request}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(module=module)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self, request, module_id):
+    def delete(self, request, module_id, theme_id):
         module = get_object_or_404(CourseModule, id=module_id)
-        theme_id = request.data.get('id')
         theme = get_object_or_404(ModuleTheme, id=theme_id, module=module)
         theme.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
