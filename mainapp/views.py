@@ -18,12 +18,6 @@ from rest_framework import status
 
 class StatisticsAPIView(APIView):
     serializer_class = StatisticsSerializer
-    queryset = Statistics.objects.all()
-    
-    def get(self, request):
-        statistics = self.queryset
-        serializer = self.serializer_class(statistics, context = {'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context = {'request': request})
@@ -31,16 +25,23 @@ class StatisticsAPIView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def patch(self, request):
-        stat_id = request.data.get('id')
+
+class StatisticsDetailAPIView(APIView):
+    serializer_class = StatisticsSerializer
+    
+    def get(self, request, stat_id):
+        statistic = get_object_or_404(Statistics, id=stat_id)
+        serializer = self.serializer_class(statistic, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, stat_id):
         statistic = get_object_or_404(Statistics, id=stat_id)
         serializer = self.serializer_class(statistic, data=request.data, context = {'request': request}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self, request):
-        stat_id = request.data.get('id')
+    def delete(self, request, stat_id):
         statistic = get_object_or_404(Statistics, id=stat_id)
         statistic.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -82,18 +83,32 @@ class TechnologyAPIView(APIView):
         serializer.save(course=course)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def patch(self, request, course_id):
+    def get(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
-        technology_id = request.data.get('id')
-        technology = get_object_or_404(Technology, id=technology_id, course=course)
+        technologies = Technology.objects.filter(course=course)
+        serializer = self.serializer_class(technologies, many=True, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class TechnologyDetailAPIView(APIView):
+    serializer_class = TechnologySerializer
+    
+    def get(self, request, course_id, tech_id):
+        course = get_object_or_404(Course, id=course_id)
+        technology = get_object_or_404(Technology, id=tech_id, course=course)
+        serializer = self.serializer_class(technology, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, course_id, tech_id):
+        course = get_object_or_404(Course, id=course_id)
+        technology = get_object_or_404(Technology, id=tech_id, course=course)
         serializer = self.serializer_class(technology, data=request.data, context = {'request': request}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(course=course)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self, request, course_id):
+    def delete(self, request, course_id, tech_id):
         course = get_object_or_404(Course, id=course_id)
-        tech_id = request.data.get('id')
         technology = get_object_or_404(Technology, id=tech_id, course=course)
         technology.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -198,18 +213,32 @@ class TeacherAchievementAPIView(APIView):
         serializer.save(teacher=teacher)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def patch(self, request, teacher_id):
+    def get(self, request, teacher_id):
         teacher = get_object_or_404(Teacher, id=teacher_id)
-        achievement_id = request.data.get('id')
+        achievements = TeacherAchievement.objects.filter(teacher=teacher)
+        serializer = self.serializer_class(achievements, many=True, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class TeacherAchievementDetailAPIView(APIView):
+    serializer_class = TeacherAchievementSerializer
+    
+    def get(self, request, teacher_id, achievement_id):
+        teacher = get_object_or_404(Teacher, id=teacher_id)
+        achievement = get_object_or_404(TeacherAchievement, id=achievement_id, teacher=teacher)
+        serializer = self.serializer_class(achievement, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, teacher_id, achievement_id):
+        teacher = get_object_or_404(Teacher, id=teacher_id)
         achievement = get_object_or_404(TeacherAchievement, id=achievement_id, teacher=teacher)
         serializer = self.serializer_class(achievement, data=request.data, context = {'request': request}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(teacher=teacher)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self, request, teacher_id):
+    def delete(self, request, teacher_id, achievement_id):
         teacher = get_object_or_404(Teacher, id=teacher_id)
-        achievement_id = request.data.get('id')
         achievement = get_object_or_404(TeacherAchievement, id=achievement_id, teacher=teacher)
         achievement.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -225,18 +254,32 @@ class TeacherSkillAPIView(APIView):
         serializer.save(teacher=teacher)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def patch(self, request, teacher_id):
+    def get(self, request, teacher_id):
         teacher = get_object_or_404(Teacher, id=teacher_id)
-        skill_id = request.data.get('id')
+        skills = TeacherSkill.objects.filter(teacher=teacher)
+        serializer = self.serializer_class(skills, many=True, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class TeacherSkillDetailAPIView(APIView):
+    serializer_class = TeacherSkillSerializer
+    
+    def get(self, request, teacher_id, skill_id):
+        teacher = get_object_or_404(Teacher, id=teacher_id)
+        skill = get_object_or_404(TeacherSkill, id=skill_id, teacher=teacher)
+        serializer = self.serializer_class(skill, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, teacher_id, skill_id):
+        teacher = get_object_or_404(Teacher, id=teacher_id)
         skill = get_object_or_404(TeacherSkill, id=skill_id, teacher=teacher)
         serializer = self.serializer_class(skill, data=request.data, context = {'request': request}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save(teacher=teacher)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self, request, teacher_id):
+    def delete(self, request, teacher_id, skill_id):
         teacher = get_object_or_404(Teacher, id=teacher_id)
-        skill_id = request.data.get('id')
         skill = get_object_or_404(TeacherSkill, id=skill_id, teacher=teacher)
         skill.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
