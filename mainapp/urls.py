@@ -17,6 +17,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
+router.register('news', NewsListView, basename='news')
 router.register('company', CompanyListView, basename='company')
 router.register('education-about', EducationAboutView, basename='education-about')
 router.register('course-about', CourseAboutView, basename='course-about')
