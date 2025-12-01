@@ -18,6 +18,7 @@ from mainapp.views import (
     TeacherAchievementDetailAPIView,
     TeacherSkillAPIView,
     TeacherSkillDetailAPIView,
+    StatusAPIView,
 )
 from rest_framework.routers import DefaultRouter
 
@@ -29,6 +30,7 @@ router.register('education-about', EducationAboutView, basename='education-about
 router.register('course-about', CourseAboutView, basename='course-about')
 router.register('courses', CourseAPIView, basename='courses')
 router.register('teachers', TeacherAPIView, basename='teachers')
+router.register('status', StatusAPIView, basename='status')
 
 urlpatterns = [
     path('statistics/', StatisticsAPIView.as_view(), name='statistics'),

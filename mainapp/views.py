@@ -5,15 +5,16 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet, ModelV
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from mainapp.serializers import (CourseSerializer, TechnologySerializer,
                                  CourseModuleSerializer, ModuleThemeSerializer,
-                                StatisticsSerializer,
+                                StatisticsSerializer, StatusSerializer,
                                 TeacherSerializer, TeacherAchievementSerializer,
                                 TeacherSkillSerializer, CourseListSerializer, NewsSerializer,
                                 CompanySerializer, TeacherListSerializer, EducationAboutSerializer,
                                 CourseAboutSerializer)
-from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout,
+from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout, Status,
                             Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout)
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 class StatisticsAPIView(APIView):
@@ -24,6 +25,11 @@ class StatisticsAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def get(self, request):
+        statistics = Statistics.objects.all()
+        serializer = self.serializer_class(statistics, many=True, context = {'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class StatisticsDetailAPIView(APIView):
@@ -75,6 +81,7 @@ class CourseAPIView(ModelViewSet):
 
 class TechnologyAPIView(APIView):
     serializer_class = TechnologySerializer
+    permission_classes = []
     
     def post(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
@@ -283,3 +290,8 @@ class TeacherSkillDetailAPIView(APIView):
         skill = get_object_or_404(TeacherSkill, id=skill_id, teacher=teacher)
         skill.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class StatusAPIView(ModelViewSet):
+    queryset = Status.objects.all()
+    serializer_class = StatusSerializer
