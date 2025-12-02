@@ -34,6 +34,7 @@ router.register('status', StatusAPIView, basename='status')
 
 urlpatterns = [
     path('statistics/', StatisticsAPIView.as_view(), name='statistics'),
+    path('status/', StatusAPIView.as_view(), name='status'),
     path('statistics/<int:stat_id>/', StatisticsDetailAPIView.as_view(), name='statistics-detail'),
     path('technologies/<int:course_id>/', TechnologyAPIView.as_view(), name='technologies'),
     path('technologies/<int:course_id>/<int:tech_id>/', TechnologyDetailAPIView.as_view(), name='technology-detail'),
