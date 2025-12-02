@@ -96,7 +96,6 @@ class StatusSerializer(serializers.ModelSerializer):
 
 
 class NewsSerializer(serializers.ModelSerializer):
-    status = StatusSerializer()
     class Meta:
         model = News
         fields = '__all__'
