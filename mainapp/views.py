@@ -52,7 +52,7 @@ class StatisticsDetailAPIView(APIView):
     def delete(self, request, stat_id):
         statistic = get_object_or_404(Statistics, id=stat_id)
         statistic.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Statistic deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
 
 
@@ -120,7 +120,7 @@ class TechnologyDetailAPIView(APIView):
         course = get_object_or_404(Course, id=course_id)
         technology = get_object_or_404(Technology, id=tech_id, course=course)
         technology.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Technology deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
 
 class CourseModuleListAPIView(APIView):
@@ -204,7 +204,7 @@ class ModuleThemeAPIView(APIView):
         module = get_object_or_404(CourseModule, id=module_id)
         theme = get_object_or_404(ModuleTheme, id=theme_id, module=module)
         theme.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Theme deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
 class TeacherAPIView(ModelViewSet):
@@ -250,7 +250,7 @@ class TeacherAchievementDetailAPIView(APIView):
         teacher = get_object_or_404(Teacher, id=teacher_id)
         achievement = get_object_or_404(TeacherAchievement, id=achievement_id, teacher=teacher)
         achievement.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Achievement deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
 class TeacherSkillAPIView(APIView):
@@ -291,7 +291,7 @@ class TeacherSkillDetailAPIView(APIView):
         teacher = get_object_or_404(Teacher, id=teacher_id)
         skill = get_object_or_404(TeacherSkill, id=skill_id, teacher=teacher)
         skill.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Skill deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
 class ContactMessageAPIView(APIView):
     permission_classes = []
@@ -312,7 +312,6 @@ class ContactMessageAPIView(APIView):
             contect.phone_number,
             contect.course
         )
-        
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
