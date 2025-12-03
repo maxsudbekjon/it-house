@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     #local apps
-    'mainapp',
+    'mainapp'
 ]
 
 MIDDLEWARE = [

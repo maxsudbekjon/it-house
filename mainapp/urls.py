@@ -19,6 +19,7 @@ from mainapp.views import (
     TeacherSkillAPIView,
     TeacherSkillDetailAPIView,
     StatusAPIView,
+    ContactMessageAPIView,
 )
 from rest_framework.routers import DefaultRouter
 
@@ -45,5 +46,5 @@ urlpatterns = [
     path('teacher/<int:teacher_id>/achievements/<int:achievement_id>/', TeacherAchievementDetailAPIView.as_view(), name='teacher-achievement-detail'),
     path('teacher/<int:teacher_id>/skills/', TeacherSkillAPIView.as_view(), name='teacher-skills'),
     path('teacher/<int:teacher_id>/skills/<int:skill_id>/', TeacherSkillDetailAPIView.as_view(), name='teacher-skill-detail'),
-    
+    path('contact/', ContactMessageAPIView.as_view(), name='contact-message'),
 ] + router.urls

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout, Status,
-                            Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout)
+                            Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout, ContactMessage)
 
 
 class TechnologySerializer(serializers.ModelSerializer):
@@ -117,3 +117,12 @@ class CourseAboutSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseAbout
         fields = '__all__'
+        
+
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = '__all__'
+        extra_kwargs = {
+            'created_at': {'read_only': True},
+        }

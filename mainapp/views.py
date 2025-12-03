@@ -9,12 +9,14 @@ from mainapp.serializers import (CourseSerializer, TechnologySerializer,
                                 TeacherSerializer, TeacherAchievementSerializer,
                                 TeacherSkillSerializer, CourseListSerializer, NewsSerializer,
                                 CompanySerializer, TeacherListSerializer, EducationAboutSerializer,
-                                CourseAboutSerializer)
+                                CourseAboutSerializer, ContactMessageSerializer)
 from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout, Status,
-                            Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout)
+                            Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout, ContactMessage)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from mainapp.utils import sent_to_telegram
+from drf_spectacular.utils import extend_schema
 
 
 class StatisticsAPIView(APIView):
@@ -290,6 +292,28 @@ class TeacherSkillDetailAPIView(APIView):
         skill = get_object_or_404(TeacherSkill, id=skill_id, teacher=teacher)
         skill.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class ContactMessageAPIView(APIView):
+    permission_classes = []
+    serializer_class = ContactMessageSerializer
+    
+    @extend_schema(
+        request=ContactMessageSerializer,
+        responses={201: ContactMessageSerializer},
+        description="Create a new contact message and send it to Telegram."
+    )
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context = {'request': request})
+        serializer.is_valid(raise_exception=True)
+        contect = serializer.save()
+        
+        sent_to_telegram(
+            contect.name,
+            contect.phone_number,
+            contect.course
+        )
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
 class StatusAPIView(ModelViewSet):
