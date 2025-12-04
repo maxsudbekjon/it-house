@@ -91,6 +91,7 @@ class TeacherListSerializer(serializers.ModelSerializer):
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
+        model = Status
         fields = '__all__'
 
 
@@ -98,13 +99,15 @@ class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = '__all__'
-
+# Yaxshilangan GetNewsSerializer
 class GetNewsSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     class Meta:
         model = News
         fields = '__all__'
-    def get_status(self, obj):
+        
+    # Python Type Hinting yordamida qaytuvchi ma'lumot turini (str) aniqlash
+    def get_status(self, obj) -> str | None: # str | None Python 3.10+ uchun
         if obj.status:
             return obj.status.title_uz
         return None
