@@ -95,10 +95,14 @@ class StatusSerializer(serializers.ModelSerializer):
 
 
 class NewsSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
     class Meta:
         model = News
         fields = '__all__'
-        depth = 1
+    def get_status(self, obj):
+        if obj.status:
+            return obj.status.title_uz
+        return None
 
 
 class CompanySerializer(serializers.ModelSerializer):
