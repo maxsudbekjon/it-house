@@ -59,7 +59,12 @@ class StatisticsDetailAPIView(APIView):
 class NewsListView(ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
-
+    serializer_classes = {
+        'list': GetNewsSerializer,      # GET (ro'yxatni olish)
+        'retrieve': NewsSerializer,  # GET (detalni olish)
+        'create': NewsSerializer,    # POST (yaratish)
+        'update': NewsSerializer,          # PUT/PATCH (to'liq/qisman yangilash)
+    }
 
 class CompanyListView(ModelViewSet):
     queryset = Company.objects.all()
