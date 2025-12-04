@@ -109,7 +109,7 @@ class GetNewsSerializer(serializers.ModelSerializer):
     # Python Type Hinting yordamida qaytuvchi ma'lumot turini (str) aniqlash
     def get_status(self, obj) -> str | None: # str | None Python 3.10+ uchun
         if obj.status:
-            return obj.status.title_uz
+            return obj.status.name_uz
         return None
 
 
