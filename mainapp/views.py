@@ -55,16 +55,36 @@ class StatisticsDetailAPIView(APIView):
         return Response({"message": "Statistic deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
 
+from rest_framework import viewsets
 
-class NewsListView(ModelViewSet):
+class NewsListView(viewsets.ModelViewSet):
+    # Umumiy queryset
     queryset = News.objects.all()
+
+    # Default serializer (Agar action lug'atda bo'lmasa, bu ishlatiladi)
     serializer_class = NewsSerializer
+    
+    # Amal (Action) bo'yicha serializerlarni belgilash
     serializer_classes = {
-        'list': GetNewsSerializer,      # GET (ro'yxatni olish)
-        'retrieve': NewsSerializer,  # GET (detalni olish)
-        'create': NewsSerializer,    # POST (yaratish)
-        'update': NewsSerializer,          # PUT/PATCH (to'liq/qisman yangilash)
+        'list': GetNewsSerializer,      # GET (ro'yxat uchun)
+        'retrieve': NewsSerializer,     # GET (detal uchun)
+        'create': NewsSerializer,       # POST (yaratish uchun)
+        'update': NewsSerializer,       # PUT/PATCH (yangilash uchun)
+        'partial_update': NewsSerializer, # PATCH (qisman yangilash uchun)
+        'destroy': NewsSerializer,      # DELETE uchun (garchi bu yerda serializer kam ishlatilsa ham)
     }
+
+    def get_serializer_class(self):
+        """
+        Hozirgi bajarilayotgan 'action'ga (list, retrieve, create, update, etc.) qarab
+        mos keladigan serializer sinfini qaytaradi.
+        """
+        # self.action hozirgi amallarni bildiradi (masalan, 'list', 'create')
+        if self.action in self.serializer_classes:
+            return self.serializer_classes[self.action]
+        
+        # Agar 'action' yuqoridagi lug'atda bo'lmasa, default (NewsSerializer) qaytariladi
+        return super().get_serializer_class()
 
 class CompanyListView(ModelViewSet):
     queryset = Company.objects.all()
