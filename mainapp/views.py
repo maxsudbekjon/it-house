@@ -7,7 +7,7 @@ from mainapp.serializers import (CourseSerializer, TechnologySerializer,
                                  CourseModuleSerializer, ModuleThemeSerializer,
                                 StatisticsSerializer, StatusSerializer,
                                 TeacherSerializer, TeacherAchievementSerializer,
-                                TeacherSkillSerializer, CourseListSerializer, NewsSerializer,
+                                TeacherSkillSerializer, CourseListSerializer, NewsSerializer, GetNewsSerializer,
                                 CompanySerializer, TeacherListSerializer, EducationAboutSerializer,
                                 CourseAboutSerializer, ContactMessageSerializer)
 from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout, Status,
