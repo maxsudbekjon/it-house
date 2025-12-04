@@ -91,11 +91,12 @@ class TeacherListSerializer(serializers.ModelSerializer):
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Status
         fields = '__all__'
+        depth = 1
 
 
 class NewsSerializer(serializers.ModelSerializer):
+    status = serializers.
     class Meta:
         model = News
         fields = '__all__'
