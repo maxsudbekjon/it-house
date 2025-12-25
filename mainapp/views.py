@@ -14,7 +14,7 @@ from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Compa
                             Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout, ContactMessage)
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from mainapp.utils import sent_to_telegram
 from drf_spectacular.utils import extend_schema
 
@@ -32,6 +32,13 @@ class StatisticsAPIView(APIView):
         statistics = Statistics.objects.all()
         serializer = self.serializer_class(statistics, many=True, context = {'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in 'POST':
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
     
 
 class StatisticsDetailAPIView(APIView):
@@ -54,16 +61,29 @@ class StatisticsDetailAPIView(APIView):
         statistic.delete()
         return Response({"message": "Statistic deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in ['PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+    
 
 from rest_framework import viewsets
 
 class NewsListView(viewsets.ModelViewSet):
     # Umumiy queryset
     queryset = News.objects.all()
-
-    # Default serializer (Agar action lug'atda bo'lmasa, bu ishlatiladi)
     serializer_class = NewsSerializer
     
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+
+
     # Amal (Action) bo'yicha serializerlarni belgilash
     serializer_classes = {
         'list': GetNewsSerializer,      # GET (ro'yxat uchun)
@@ -89,21 +109,49 @@ class NewsListView(viewsets.ModelViewSet):
 class CompanyListView(ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 
 class EducationAboutView(ModelViewSet):
     queryset = EducationAbout.objects.all()
     serializer_class = EducationAboutSerializer
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+
 
 class CourseAboutView(ModelViewSet):
     queryset = CourseAbout.objects.all()
     serializer_class = CourseAboutSerializer
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+
 
 class CourseAPIView(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
     
 
 class TechnologyAPIView(APIView):
@@ -122,6 +170,13 @@ class TechnologyAPIView(APIView):
         technologies = Technology.objects.filter(course=course)
         serializer = self.serializer_class(technologies, many=True, context = {'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
     
 
 class TechnologyDetailAPIView(APIView):
@@ -147,6 +202,13 @@ class TechnologyDetailAPIView(APIView):
         technology.delete()
         return Response({"message": "Technology deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in ['PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+    
 
 class CourseModuleListAPIView(APIView):
     serializer_class = CourseModuleSerializer
@@ -163,6 +225,13 @@ class CourseModuleListAPIView(APIView):
         moudels = CourseModule.objects.filter(course=course)
         serializer = self.serializer_class(moudels, many=True, context = {'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
     
 
 class CourseModuleAPIView(APIView):
@@ -189,6 +258,13 @@ class CourseModuleAPIView(APIView):
         module.delete()
         return Response({"message": "Module deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in ['PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+    
 
 class ModuleThemeListAPIView(APIView):
     serializer_class = ModuleThemeSerializer
@@ -207,6 +283,12 @@ class ModuleThemeListAPIView(APIView):
         serializer = self.serializer_class(themes, many=True, context = {'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 class ModuleThemeAPIView(APIView):
     serializer_class = ModuleThemeSerializer
@@ -230,11 +312,25 @@ class ModuleThemeAPIView(APIView):
         theme = get_object_or_404(ModuleTheme, id=theme_id, module=module)
         theme.delete()
         return Response({"message": "Theme deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in ['PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 
 class TeacherAPIView(ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 
 class TeacherAchievementAPIView(APIView):
@@ -252,6 +348,13 @@ class TeacherAchievementAPIView(APIView):
         achievements = TeacherAchievement.objects.filter(teacher=teacher)
         serializer = self.serializer_class(achievements, many=True, context = {'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
     
 
 class TeacherAchievementDetailAPIView(APIView):
@@ -276,6 +379,13 @@ class TeacherAchievementDetailAPIView(APIView):
         achievement = get_object_or_404(TeacherAchievement, id=achievement_id, teacher=teacher)
         achievement.delete()
         return Response({"message": "Achievement deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in ['PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 
 class TeacherSkillAPIView(APIView):
@@ -293,6 +403,13 @@ class TeacherSkillAPIView(APIView):
         skills = TeacherSkill.objects.filter(teacher=teacher)
         serializer = self.serializer_class(skills, many=True, context = {'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
 
 
 class TeacherSkillDetailAPIView(APIView):
@@ -318,8 +435,15 @@ class TeacherSkillDetailAPIView(APIView):
         skill.delete()
         return Response({"message": "Skill deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        if self.request.method in ['PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
+    
 class ContactMessageAPIView(APIView):
-    permission_classes = []
+    permission_classes = [AllowAny]
     serializer_class = ContactMessageSerializer
     
     @extend_schema(
@@ -343,3 +467,10 @@ class ContactMessageAPIView(APIView):
 class StatusAPIView(ModelViewSet):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
+        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAdminUser]
+        return super().get_permissions()
