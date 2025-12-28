@@ -163,7 +163,9 @@ SIMPLE_JWT = {
 # =========================
 # CSRF
 # =========================
-CSRF_TRUSTED_ORIGINS = [
-    "https://ithouseedu.uz",
-    "https://api.ithouseedu.uz",
-]
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    ""
+).split(",")
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
