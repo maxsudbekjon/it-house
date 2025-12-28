@@ -23,7 +23,7 @@ ALLOWED_HOSTS = os.getenv(
 # =========================
 INSTALLED_APPS = [
     "jazzmin",
-
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 # MIDDLEWARE
 # =========================
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 
@@ -60,10 +61,10 @@ MIDDLEWARE = [
 # CORS (PRODUCTION SAFE)
 # =========================
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "https://ithouseedu.uz",
-    "https://api.ithouseedu.uz",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://ithouseedu.uz",
+#     "https://api.ithouseedu.uz",
+# ]
 
 # =========================
 # URL & TEMPLATES
@@ -169,3 +170,9 @@ CSRF_TRUSTED_ORIGINS = os.getenv(
 ).split(",")
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://45.130.104.72",        # SERVER IP
+    "http://45.130.104.72:8011",   # AGAR PORT BILAN CHAQIRILSA
+]
