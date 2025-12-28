@@ -27,17 +27,15 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup --system django && adduser --system --ingroup django django
-
 WORKDIR /app
 
+# VENV NI KO‘CHIRAMIZ
 COPY --from=builder /venv /venv
+
+# MUHIM: PATH GA QO‘SHAMIZ
 ENV PATH="/venv/bin:$PATH"
 
 COPY . .
-
-RUN chown -R django:django /app
-USER django
 
 EXPOSE 8000
 
