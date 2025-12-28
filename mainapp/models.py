@@ -129,7 +129,7 @@ class News(BaseModel):
     description_en = models.TextField()
     description_ru = models.TextField()
     banner = models.ImageField(upload_to='news_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='news')
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='news', null=True, blank=True)
 
     def __str__(self):
         return self.title_uz
@@ -158,3 +158,13 @@ class EducationAbout(BaseModel):
 
     def __str__(self):
         return self.title_uz
+    
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.course}"

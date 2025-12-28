@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Company, EducationAbout, Status,
-                            Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout)
+                            Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout, ContactMessage)
 
 
 class TechnologySerializer(serializers.ModelSerializer):
@@ -96,10 +96,21 @@ class StatusSerializer(serializers.ModelSerializer):
 
 
 class NewsSerializer(serializers.ModelSerializer):
-    status = StatusSerializer()
     class Meta:
         model = News
         fields = '__all__'
+# Yaxshilangan GetNewsSerializer
+class GetNewsSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
+    class Meta:
+        model = News
+        fields = '__all__'
+        
+    # Python Type Hinting yordamida qaytuvchi ma'lumot turini (str) aniqlash
+    def get_status(self, obj) -> str | None: # str | None Python 3.10+ uchun
+        if obj.status:
+            return obj.status.name_uz
+        return None
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -118,3 +129,12 @@ class CourseAboutSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseAbout
         fields = '__all__'
+        
+
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = '__all__'
+        extra_kwargs = {
+            'created_at': {'read_only': True},
+        }
