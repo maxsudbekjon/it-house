@@ -1,3 +1,4 @@
+version: "3.9"
 
 services:
   web:
@@ -9,47 +10,42 @@ services:
       - media_volume:/app/media
     env_file:
       - .env
-
     depends_on:
       db:
         condition: service_healthy
-
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/health/ || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 40s
 
-    networks:
-      - backend
-    restart: unless-stopped
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - "8011:80"
+    volumes:
+      - static_volume:/static
+      - media_volume:/media
+    depends_on:
+      web:
+        condition: service_started
 
   db:
     image: postgres:15
-    container_name: django_db
     environment:
       POSTGRES_DB: myproject
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U myuser -d myproject"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-    networks:
-      - backend
-    restart: unless-stopped
-
 volumes:
   postgres_data:
   static_volume:
   media_volume:
-
-networks:
-  backend:
-    external: true
