@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "rest_framework",
     "rest_framework_simplejwt",
-    "corsheaders",
 
     # local
     "mainapp",
@@ -47,7 +46,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
