@@ -1,29 +1,32 @@
-
-
 from pathlib import Path
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv()
 
 # =========================
-# CORE SECURITY
+# CORE
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DEBUG", "0") == "1"
 
-DEBUG = os.getenv("DEBUG") == "1"
-
+# =========================
+# HOSTS
+# =========================
 ALLOWED_HOSTS = os.getenv(
     "DJANGO_ALLOWED_HOSTS",
-    "localhost,127.0.0.1"
+    ""
 ).split(",")
 
 # =========================
 # APPLICATIONS
 # =========================
 INSTALLED_APPS = [
-    "jazzmin",
     "corsheaders",
+    "jazzmin",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -31,12 +34,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # third-party
-    "drf_spectacular",
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_spectacular",
 
-    # local
     "mainapp",
 ]
 
@@ -45,27 +46,53 @@ INSTALLED_APPS = [
 # =========================
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # =========================
-# CORS (PRODUCTION SAFE)
+# CORS
 # =========================
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "https://ithouseedu.uz",
-#     "https://api.ithouseedu.uz",
-# ]
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = os.getenv(
+    "DJANGO_CORS_ALLOWED_ORIGINS",
+    ""
+).split(",")
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 
 # =========================
-# URL & TEMPLATES
+# CSRF
+# =========================
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    ""
+).split(",")
+
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# =========================
+# URLS / TEMPLATES
 # =========================
 ROOT_URLCONF = "core.urls"
 
@@ -87,36 +114,18 @@ TEMPLATES = [
 WSGI_APPLICATION = "core.wsgi.application"
 
 # =========================
-# DATABASE (POSTGRES – PRODUCTION)
+# DATABASE
 # =========================
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "postgres"),
-        "USER": os.getenv("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-        "HOST": os.getenv("POSTGRES_HOST", "db"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
-
-# =========================
-# PASSWORD VALIDATION
-# =========================
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
-
-# =========================
-# INTERNATIONALIZATION
-# =========================
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
-USE_I18N = True
-USE_TZ = True
 
 # =========================
 # STATIC & MEDIA
@@ -128,12 +137,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # =========================
-# DJANGO DEFAULTS
-# =========================
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# =========================
-# DRF
+# REST FRAMEWORK
 # =========================
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -146,35 +150,26 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "IT House Info API",
-    "DESCRIPTION": "IT House ning informatsion sayti uchun barcha API lar",
+    "TITLE": "IT House API",
+    "DESCRIPTION": "Production API",
     "VERSION": "1.0.0",
-    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # =========================
 # JWT
 # =========================
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
     "AUTH_HEADER_TYPES": ("Bearer",),
+    "SIGNING_KEY": SECRET_KEY,
 }
 
 # =========================
-# CSRF
+# DEFAULTS
 # =========================
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    "DJANGO_CSRF_TRUSTED_ORIGINS",
-    ""
-).split(",")
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
-
-
-CORS_ALLOWED_ORIGINS = [
-    "http://45.130.104.72",        # SERVER IP
-    "http://45.130.104.72:8011",   # AGAR PORT BILAN CHAQIRILSA
-]
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "Asia/Tashkent"
+USE_I18N = True
+USE_TZ = True
