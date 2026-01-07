@@ -19,5 +19,11 @@ class InstagramPostListAPIView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        posts = fetch_instagram_posts(username, limit=10)
+        try:
+            posts = fetch_instagram_posts(username, limit=10)
+        except Exception:
+            return Response(
+                {"detail": "Instagramdan post olishda xatolik yuz berdi."},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
         return Response(posts, status=status.HTTP_200_OK)

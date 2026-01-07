@@ -18,25 +18,59 @@ def _parse_timestamp(node):
     return datetime.fromtimestamp(ts, tz=timezone.utc)
 
 
-def fetch_instagram_posts(username, limit=10):
-    url = f"https://www.instagram.com/api/v1/users/web_profile_info/?username={username}"
-    headers = {
+def _build_headers(username):
+    return {
         "User-Agent": (
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
             "Chrome/123.0.0.0 Safari/537.36"
         ),
         "Accept": "application/json",
+        "Referer": f"https://www.instagram.com/{username}/",
     }
-    response = requests.get(url, headers=headers, timeout=15)
-    response.raise_for_status()
-    data = response.json()
-    edges = (
-        data.get("data", {})
+
+
+def _extract_edges_from_payload(data):
+    if "data" in data:
+        return (
+            data.get("data", {})
+            .get("user", {})
+            .get("edge_owner_to_timeline_media", {})
+            .get("edges", [])
+        )
+    return (
+        data.get("graphql", {})
         .get("user", {})
         .get("edge_owner_to_timeline_media", {})
         .get("edges", [])
     )
+
+
+def _request_profile_json(username, timeout=15):
+    headers = _build_headers(username)
+    profile_url = f"https://www.instagram.com/{username}/"
+
+    endpoints = [
+        f"https://www.instagram.com/api/v1/users/web_profile_info/?username={username}",
+        f"{profile_url}?__a=1&__d=dis",
+    ]
+
+    for url in endpoints:
+        response = requests.get(url, headers=headers, timeout=timeout)
+        if response.status_code >= 400:
+            continue
+        try:
+            payload = response.json()
+        except ValueError:
+            continue
+        edges = _extract_edges_from_payload(payload)
+        if edges:
+            return edges
+    return []
+
+
+def fetch_instagram_posts(username, limit=10):
+    edges = _request_profile_json(username)
 
     posts = []
     for edge in edges[:limit]:
