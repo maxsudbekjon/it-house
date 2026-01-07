@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
 
     "mainapp",
+    "instagram_posts.apps.InstagramPostsConfig",
 ]
 
 # =========================
