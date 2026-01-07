@@ -12,6 +12,7 @@ drf-spectacular==0.29.0
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
+instaloader==4.15
 idna==3.11
 inflection==0.5.1
 instaloader==4.15
