@@ -69,22 +69,41 @@ def _request_profile_json(username, timeout=15):
     return []
 
 
-def fetch_instagram_posts(username, limit=10):
-    edges = _request_profile_json(username)
+import instaloader
+from datetime import datetime
+from django.utils import timezone
+
+
+def fetch_instagram_posts(username: str, limit: int = 10):
+    loader = instaloader.Instaloader(
+        download_pictures=False,
+        download_videos=False,
+        download_video_thumbnails=False,
+        save_metadata=False,
+        compress_json=False,
+    )
+
+    profile = instaloader.Profile.from_username(
+        loader.context, username
+    )
 
     posts = []
-    for edge in edges[:limit]:
-        node = edge.get("node", {})
-        shortcode = node.get("shortcode")
+
+    for post in profile.get_posts():
         posts.append(
             {
-                "instagram_id": node.get("id", ""),
-                "caption": _extract_caption(node),
-                "media_url": node.get("display_url", ""),
-                "permalink": f"https://www.instagram.com/p/{shortcode}/" if shortcode else "",
-                "media_type": node.get("__typename", ""),
-                "posted_at": _parse_timestamp(node),
+                "instagram_id": post.mediaid,
+                "caption": post.caption or "",
+                "media_url": post.url,
+                "permalink": f"https://www.instagram.com/p/{post.shortcode}/",
+                "media_type": "VIDEO" if post.is_video else "IMAGE",
+                "posted_at": post.date_utc.astimezone(timezone.utc),
+                "likes": post.likes,
+                "comments": post.comments,
             }
         )
 
-    return [post for post in posts if post.get("instagram_id") and post.get("media_url")]
+        if len(posts) >= limit:
+            break
+
+    return posts
