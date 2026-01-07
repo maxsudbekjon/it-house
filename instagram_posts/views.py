@@ -25,3 +25,4 @@ class InstagramPostListAPIView(APIView):
             )
 
         return Response(posts, status=status.HTTP_200_OK)
+
