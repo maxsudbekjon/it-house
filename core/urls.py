@@ -19,4 +19,5 @@ urlpatterns = [
     path('api/', include('instagram_posts.urls')),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/podcasts/', include('podcasts.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

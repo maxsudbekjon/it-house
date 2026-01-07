@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
 
     "mainapp",
+    "podcasts",
     "instagram_posts.apps.InstagramPostsConfig",
 ]
 
@@ -174,3 +175,8 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Tashkent"
 USE_I18N = True
 USE_TZ = True
+
+
+YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
+YOUTUBE_CHANNEL_ID = os.getenv('YOUTUBE_CHANNEL_ID')
+YOUTUBE_PLAYLIST_ID = os.getenv('YOUTUBE_PLAYLIST_ID')
