@@ -1,7 +1,6 @@
 from datetime import datetime, timezone as dt_timezone
 
 import requests
-from django.utils import timezone
 
 
 def _extract_caption(node):
