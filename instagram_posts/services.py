@@ -1,4 +1,5 @@
 from datetime import datetime, timezone as dt_timezone
+from time import timezone
 import instaloader
 
 import requests
