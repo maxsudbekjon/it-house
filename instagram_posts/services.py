@@ -1,8 +1,8 @@
 from datetime import datetime, timezone as dt_timezone
-from time import timezone
 import instaloader
 
 import requests
+from django.utils import timezone as dj_timezone
 
 
 def _extract_caption(node):
@@ -15,7 +15,7 @@ def _extract_caption(node):
 def _parse_timestamp(node):
     ts = node.get("taken_at_timestamp")
     if not ts:
-        return timezone.now()
+        return dj_timezone.now()
     return datetime.fromtimestamp(ts, tz=dt_timezone.utc)
 
 
@@ -96,7 +96,7 @@ def fetch_instagram_posts(username: str, limit: int = 10):
                 "media_url": post.url,
                 "permalink": f"https://www.instagram.com/p/{post.shortcode}/",
                 "media_type": "VIDEO" if post.is_video else "IMAGE",
-                "posted_at": post.date_utc.astimezone(timezone.utc),
+                "posted_at": post.date_utc.astimezone(dt_timezone.utc),
                 "likes": post.likes,
                 "comments": post.comments,
             }
