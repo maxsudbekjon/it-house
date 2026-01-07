@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone as dt_timezone
 
 import requests
 from django.utils import timezone
@@ -15,7 +15,7 @@ def _parse_timestamp(node):
     ts = node.get("taken_at_timestamp")
     if not ts:
         return timezone.now()
-    return datetime.fromtimestamp(ts, tz=timezone.utc)
+    return datetime.fromtimestamp(ts, tz=dt_timezone.utc)
 
 
 def _build_headers(username):
