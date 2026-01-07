@@ -1,4 +1,5 @@
 from datetime import datetime, timezone as dt_timezone
+import instaloader
 
 import requests
 
@@ -68,9 +69,7 @@ def _request_profile_json(username, timeout=15):
     return []
 
 
-import instaloader
-from datetime import datetime
-from django.utils import timezone
+
 
 
 def fetch_instagram_posts(username: str, limit: int = 10):
