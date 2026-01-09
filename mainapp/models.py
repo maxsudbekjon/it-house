@@ -128,6 +128,7 @@ class News(BaseModel):
     description_uz = models.TextField()
     description_en = models.TextField()
     description_ru = models.TextField()
+    link=models.CharField(max_length=255,null=True,blank=True,default="")
     banner = models.ImageField(upload_to='news_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='news', null=True, blank=True)
 
