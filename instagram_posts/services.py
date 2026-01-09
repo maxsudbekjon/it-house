@@ -93,6 +93,11 @@ def _init_loader():
 
     if login_username and login_password:
         loader.login(login_username, login_password)
+        if session_file:
+            try:
+                loader.save_session_to_file(session_file)
+            except Exception:
+                pass
 
     return loader
 
