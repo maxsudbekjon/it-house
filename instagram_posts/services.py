@@ -108,15 +108,24 @@ def _init_loader():
 
 
 def fetch_instagram_posts(username: str, limit: int = 10):
-    loader = _init_loader()
+    if os.getenv("INSTAGRAM_DISABLE_LOGIN", "0") == "1":
+        loader = instaloader.Instaloader(
+            download_pictures=False,
+            download_videos=False,
+            download_video_thumbnails=False,
+            save_metadata=False,
+            compress_json=False,
+        )
+    else:
+        loader = _init_loader()
 
-    profile = instaloader.Profile.from_username(
-        loader.context, username
-    )
-
+    profile = instaloader.Profile.from_username(loader.context, username)
     posts = []
 
-    for post in profile.get_posts():
+    for index, post in enumerate(profile.get_posts()):
+        if index >= limit:
+            break
+
         posts.append(
             {
                 "instagram_id": post.mediaid,
@@ -129,8 +138,5 @@ def fetch_instagram_posts(username: str, limit: int = 10):
                 "comments": post.comments,
             }
         )
-
-        if len(posts) >= limit:
-            break
 
     return posts
