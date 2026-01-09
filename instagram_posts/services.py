@@ -1,6 +1,7 @@
 from datetime import datetime, timezone as dt_timezone
-import instaloader
+import os
 
+import instaloader
 import requests
 from django.utils import timezone as dj_timezone
 
@@ -70,10 +71,7 @@ def _request_profile_json(username, timeout=15):
     return []
 
 
-
-
-
-def fetch_instagram_posts(username: str, limit: int = 10):
+def _init_loader():
     loader = instaloader.Instaloader(
         download_pictures=False,
         download_videos=False,
@@ -81,6 +79,28 @@ def fetch_instagram_posts(username: str, limit: int = 10):
         save_metadata=False,
         compress_json=False,
     )
+
+    login_username = os.getenv("INSTAGRAM_LOGIN_USERNAME")
+    login_password = os.getenv("INSTAGRAM_LOGIN_PASSWORD")
+    session_file = os.getenv("INSTAGRAM_SESSION_FILE")
+
+    if login_username and session_file:
+        try:
+            loader.load_session_from_file(login_username, session_file)
+            return loader
+        except Exception:
+            pass
+
+    if login_username and login_password:
+        loader.login(login_username, login_password)
+
+    return loader
+
+
+
+
+def fetch_instagram_posts(username: str, limit: int = 10):
+    loader = _init_loader()
 
     profile = instaloader.Profile.from_username(
         loader.context, username
