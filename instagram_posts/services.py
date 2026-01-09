@@ -80,6 +80,9 @@ def _init_loader():
         compress_json=False,
     )
 
+    if os.getenv("INSTAGRAM_DISABLE_LOGIN", "0") == "1":
+        return loader
+
     login_username = os.getenv("INSTAGRAM_LOGIN_USERNAME")
     login_password = os.getenv("INSTAGRAM_LOGIN_PASSWORD")
     session_file = os.getenv("INSTAGRAM_SESSION_FILE")
