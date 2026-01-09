@@ -22,8 +22,8 @@ class InstagramPostListAPIView(APIView):
         except (TypeError, ValueError):
             limit = 10
 
-        cache_ttl = int(os.getenv("INSTAGRAM_CACHE_TTL_SECONDS", "86400"))
-        min_interval = int(os.getenv("INSTAGRAM_FETCH_INTERVAL_SECONDS", "86400"))
+        cache_ttl = int(os.getenv("INSTAGRAM_CACHE_TTL_SECONDS", "259200"))
+        min_interval = int(os.getenv("INSTAGRAM_FETCH_INTERVAL_SECONDS", "259200"))
         cache_key = f"instagram_posts:{username}:{limit}"
         last_fetch_key = f"instagram_posts_last_fetch:{username}"
 
