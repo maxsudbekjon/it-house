@@ -14,7 +14,7 @@ from mainapp.models import (Course, Technology, CourseModule, ModuleTheme, Compa
                             Statistics, Teacher, TeacherAchievement, TeacherSkill, News, CourseAbout, ContactMessage)
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.permissions import AllowAny, BasePermission
 from mainapp.utils import sent_to_telegram
 from drf_spectacular.utils import extend_schema
 
@@ -36,8 +36,8 @@ class StatisticsAPIView(APIView):
     def get_permissions(self):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
-        if self.request.method in 'POST':
-            self.permission_classes = [IsAdminUser]
+        if self.request.method == 'POST':
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -65,7 +65,7 @@ class StatisticsDetailAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method in ['PATCH', 'DELETE']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -80,7 +80,7 @@ class NewsListView(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -114,7 +114,7 @@ class CompanyListView(ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -126,7 +126,7 @@ class EducationAboutView(ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -138,7 +138,7 @@ class CourseAboutView(ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -150,7 +150,7 @@ class CourseAPIView(ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -175,7 +175,7 @@ class TechnologyAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method == 'POST':
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -206,7 +206,7 @@ class TechnologyDetailAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method in ['PATCH', 'DELETE']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -230,7 +230,7 @@ class CourseModuleListAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method == 'POST':
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -262,7 +262,7 @@ class CourseModuleAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method in ['PATCH', 'DELETE']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -287,7 +287,7 @@ class ModuleThemeListAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method == 'POST':
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 class ModuleThemeAPIView(APIView):
@@ -317,7 +317,7 @@ class ModuleThemeAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method in ['PATCH', 'DELETE']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -329,7 +329,7 @@ class TeacherAPIView(ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -353,7 +353,7 @@ class TeacherAchievementAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method == 'POST':
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 
@@ -384,7 +384,7 @@ class TeacherAchievementDetailAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method in ['PATCH', 'DELETE']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -408,7 +408,7 @@ class TeacherSkillAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method == 'POST':
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
@@ -439,11 +439,10 @@ class TeacherSkillDetailAPIView(APIView):
         if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
         if self.request.method in ['PATCH', 'DELETE']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
     
 class ContactMessageAPIView(APIView):
-    permission_classes = [AllowAny]
     serializer_class = ContactMessageSerializer
     
     @extend_schema(
@@ -462,6 +461,13 @@ class ContactMessageAPIView(APIView):
             contect.course
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsSuperUser]
+        return super().get_permissions()
     
 
 class StatusAPIView(ModelViewSet):
@@ -472,5 +478,14 @@ class StatusAPIView(ModelViewSet):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAdminUser]
+            self.permission_classes = [IsSuperUser]
         return super().get_permissions()
+
+
+class IsSuperUser(BasePermission):
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and request.user.is_superuser
+        )
