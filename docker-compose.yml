@@ -32,6 +32,8 @@ services:
       - media_volume:/app/media
     env_file:
       - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: core.settings
     ports:
       - "${PORT}:${PORT}"
     depends_on:
