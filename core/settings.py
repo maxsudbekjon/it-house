@@ -10,7 +10,7 @@ load_dotenv()
 # CORE
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG", "0") == "1"
+DEBUG = bool(int(os.getenv("DEBUG", 0)))
 
 print(f"DEBUG: {DEBUG}")
 
