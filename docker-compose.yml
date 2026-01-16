@@ -28,8 +28,8 @@ services:
     security_opt:
       - seccomp:unconfined
     volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
+      - static:/app/staticfiles
+      - media:/app/media
     env_file:
       - .env
     environment:
@@ -43,5 +43,5 @@ services:
 
 volumes:
   postgres_data:
-  static_volume:
-  media_volume:
+  static:
+  media:
