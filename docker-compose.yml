@@ -40,17 +40,6 @@ services:
       db:
         condition: service_healthy
 
-#  nginx:
-#    build: ./nginx
-#    container_name: nginx
-#    ports:
-#      - "8080:80"
-#    volumes:
-#      - static_volume:/static
-#      - media_volume:/media
-#    depends_on:
-#      web:
-#        condition: service_started
 
 volumes:
   postgres_data:
