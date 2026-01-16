@@ -1,32 +1,12 @@
 version: "3.9"
 
 services:
-  web:
-    build: .
-    container_name: django_web
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
-    env_file:
-      - .env
-    depends_on:
-      db:
-        condition: service_healthy
-  nginx:
-    build: ./nginx
-    container_name: nginx
-    ports:
-      - "8080:80"
-    volumes:
-      - static_volume:/static
-      - media_volume:/media
-    depends_on:
-      web:
-        condition: service_started
 
   db:
     image: postgres:15
+    container_name: ithouseedu_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     env_file:
       - .env
     environment:
@@ -34,15 +14,43 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-myuser}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mypassword}
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U maxsud -d it_house"]
+      test: [ "CMD-SHELL", "pg_isready -h localhost -p 5432 -U $POSTGRES_USER -d $POSTGRES_DB" ]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+
+
+  web:
+    build: .
+    container_name: ithouseedu_backend
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+#  nginx:
+#    build: ./nginx
+#    container_name: nginx
+#    ports:
+#      - "8080:80"
+#    volumes:
+#      - static_volume:/static
+#      - media_volume:/media
+#    depends_on:
+#      web:
+#        condition: service_started
 
 volumes:
   postgres_data:
