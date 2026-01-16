@@ -12,9 +12,7 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = bool(int(os.getenv("DEBUG", 0)))
 
-
 print(f"\n{DEBUG = }\n")
-
 
 # =========================
 # HOSTS
@@ -61,6 +59,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if DEBUG is False:
+    INSTALLED_APPS.insert(7, "whitenoise.runserver_nostatic")
+    MIDDLEWARE.insert(3, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 # =========================
 # CORS
@@ -141,6 +143,17 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+if DEBUG is False:
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+        },
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+            'LOCATION': os.path.join(BASE_DIR, 'media'),
+        }
+    }
+
 # =========================
 # REST FRAMEWORK
 # =========================
@@ -178,8 +191,6 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Tashkent"
 USE_I18N = True
 USE_TZ = True
-
-
 
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 YOUTUBE_CHANNEL_ID = os.getenv('YOUTUBE_CHANNEL_ID')
