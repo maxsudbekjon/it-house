@@ -12,6 +12,8 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "0") == "1"
 
+pritn(f"DEBUG: {DEBUG}")
+
 # =========================
 # HOSTS
 # =========================
