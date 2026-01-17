@@ -463,12 +463,12 @@ class ContactMessageAPIView(APIView):
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            self.permission_classes = [AllowAny]
-        else:
-            self.permission_classes = [IsSuperUser]
-        return super().get_permissions()
+    # def get_permissions(self):
+    #     if self.request.method == 'GET':
+    #         self.permission_classes = [AllowAny]
+    #     else:
+    #         self.permission_classes = [IsSuperUser]
+    #     return super().get_permissions()
     
 
 class StatusAPIView(ModelViewSet):
