@@ -328,7 +328,7 @@ class TeacherAPIView(ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
-        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+        elif self.action in ['create', 'partial_update', 'destroy']:
             self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 

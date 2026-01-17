@@ -159,6 +159,7 @@ if DEBUG is False:
 # REST FRAMEWORK
 # =========================
 REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
