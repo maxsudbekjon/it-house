@@ -67,11 +67,18 @@ class Statistics(BaseModel):
 
 
 class Company(BaseModel):
-    logo = models.ImageField(upload_to='company_logos/', validators=[FileExtensionValidator(allowed_extensions=['png', 'svg', 'jpg', 'jpeg', 'webp'])])
-    workers = models.PositiveIntegerField()
+    logo = models.ImageField(
+        upload_to='company_logos/',
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=['png', 'svg', 'jpg', 'jpeg', 'webp']
+            )
+        ]
+    )
+    title = models.CharField(max_length=63, blank=True, null=True)
 
     def __str__(self):
-        return str(self.workers)
+        return str(self.title)
 
 class Teacher(BaseModel):
     full_name = models.CharField(max_length=255)

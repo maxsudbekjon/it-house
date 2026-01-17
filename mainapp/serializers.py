@@ -99,6 +99,7 @@ class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = '__all__'
+
 # Yaxshilangan GetNewsSerializer
 class GetNewsSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
