@@ -443,6 +443,7 @@ class TeacherSkillDetailAPIView(APIView):
         return super().get_permissions()
     
 class ContactMessageAPIView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = ContactMessageSerializer
     
     @extend_schema(
