@@ -1,11 +1,9 @@
 import requests
-from dotenv import load_dotenv
-import os
+from django.conf import settings
 
-load_dotenv()
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID")
+BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN
+ADMIN_CHAT_ID = settings.TELEGRAM_CHAT_ID
 
 def sent_to_telegram(name, phone_number, course):
     message = f"New Contact Message:\nName: {name}\nPhone Number: {phone_number}\nCourse: {course}"

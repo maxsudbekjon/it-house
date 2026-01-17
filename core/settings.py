@@ -12,7 +12,8 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = bool(int(os.getenv("DEBUG", 0)))
 
-print(f"\n{DEBUG = }\n")
+TELEGRAM_BOT_TOKEN = os.getenv("BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("ADMIN_CHAT_ID")
 
 # =========================
 # HOSTS
