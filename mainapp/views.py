@@ -453,12 +453,12 @@ class ContactMessageAPIView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context = {'request': request})
         serializer.is_valid(raise_exception=True)
-        contect = serializer.save()
+        contact = serializer.save()
         
         sent_to_telegram(
-            contect.name,
-            contect.phone_number,
-            contect.course
+            contact.name,
+            contact.phone_number,
+            contact.course
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
