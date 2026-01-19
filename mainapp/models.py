@@ -75,6 +75,18 @@ class Company(BaseModel):
             )
         ]
     )
+
+    dark_logo = models.ImageField(
+        upload_to='company_logos/',
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=['png', 'svg', 'jpg', 'jpeg', 'webp']
+            )
+        ],
+        null=True,
+        blank=True
+    )
+
     title = models.CharField(max_length=63, blank=True, null=True)
 
     def __str__(self):
