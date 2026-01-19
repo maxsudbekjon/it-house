@@ -12,9 +12,9 @@ class BaseModel(models.Model):
 
 class Course(BaseModel):
     banner = models.ImageField(upload_to='course_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
-    title_uz = models.CharField(max_length=25)
-    title_en = models.CharField(max_length=25)
-    title_ru = models.CharField(max_length=25)
+    title_uz = models.CharField(max_length=255)
+    title_en = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
     description_uz = models.TextField()
     description_en = models.TextField()
     description_ru = models.TextField()
@@ -27,9 +27,9 @@ class Course(BaseModel):
     
 
 class Technology(BaseModel):
-    name_uz = models.CharField(max_length=100)
-    name_en = models.CharField(max_length=100)
-    name_ru = models.CharField(max_length=100)
+    name_uz = models.CharField(max_length=255)
+    name_en = models.CharField(max_length=255)
+    name_ru = models.CharField(max_length=255)
     icon = models.ImageField(upload_to='technology_icons/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='technologies')
     
@@ -38,9 +38,9 @@ class Technology(BaseModel):
     
 
 class CourseModule(BaseModel):
-    title_uz = models.CharField(max_length=100)
-    title_en = models.CharField(max_length=100)
-    title_ru = models.CharField(max_length=100)
+    title_uz = models.CharField(max_length=255)
+    title_en = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='modules')
 
     def __str__(self):
@@ -48,9 +48,9 @@ class CourseModule(BaseModel):
 
 
 class ModuleTheme(BaseModel):
-    title_uz = models.CharField(max_length=100)
-    title_en = models.CharField(max_length=100)
-    title_ru = models.CharField(max_length=100)
+    title_uz = models.CharField(max_length=255)
+    title_en = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
     module = models.ForeignKey(CourseModule, on_delete=models.CASCADE, related_name='themes')
 
     def __str__(self):
@@ -97,9 +97,9 @@ class Teacher(BaseModel):
     bio_uz = models.TextField(null=True, blank=True)
     bio_en = models.TextField(null=True, blank=True)
     bio_ru = models.TextField(null=True, blank=True)
-    profession = models.CharField(max_length=25)
+    profession = models.CharField(max_length=255)
     experience = models.PositiveIntegerField(help_text="Experience in years")
-    company = models.CharField(max_length=25, null=True, blank=True)
+    company = models.CharField(max_length=255, null=True, blank=True)
     total_students = models.PositiveIntegerField(null=True, blank=True)
     total_projects = models.PositiveIntegerField(null=True, blank=True)
     photo = models.ImageField(upload_to='teacher_photos/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
@@ -122,9 +122,9 @@ class TeacherAchievement(BaseModel):
     
 
 class TeacherSkill(BaseModel):
-    name_uz = models.CharField(max_length=100)
-    name_en = models.CharField(max_length=100)
-    name_ru = models.CharField(max_length=100)
+    name_uz = models.CharField(max_length=255)
+    name_en = models.CharField(max_length=255)
+    name_ru = models.CharField(max_length=255)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='skills')
 
     def __str__(self):
@@ -132,9 +132,9 @@ class TeacherSkill(BaseModel):
     
 
 class Status(BaseModel):
-    name_uz = models.CharField(max_length=100)
-    name_en = models.CharField(max_length=100)
-    name_ru = models.CharField(max_length=100)
+    name_uz = models.CharField(max_length=255)
+    name_en = models.CharField(max_length=255)
+    name_ru = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name_uz
@@ -183,7 +183,7 @@ class EducationAbout(BaseModel):
 class ContactMessage(models.Model):
     name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
-    course = models.CharField(max_length=63, blank=True, null=True)
+    course = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
