@@ -22,6 +22,9 @@ class Course(BaseModel):
     duration = models.IntegerField(help_text="Duration in months")
     students = models.PositiveIntegerField(default=0, null=True, blank=True)
 
+    class Meta:
+        ordering = ['created_at']
+
     def __str__(self):
         return self.title_uz
     
@@ -32,6 +35,10 @@ class Technology(BaseModel):
     name_ru = models.CharField(max_length=255)
     icon = models.ImageField(upload_to='technology_icons/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='technologies')
+
+
+    class Meta:
+        ordering = ['created_at']
     
     def __str__(self):
         return self.name_uz
@@ -43,6 +50,9 @@ class CourseModule(BaseModel):
     title_ru = models.CharField(max_length=255)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='modules')
 
+    class Meta:
+        ordering = ['created_at']
+
     def __str__(self):
         return self.title_uz
 
@@ -52,6 +62,9 @@ class ModuleTheme(BaseModel):
     title_en = models.CharField(max_length=255)
     title_ru = models.CharField(max_length=255)
     module = models.ForeignKey(CourseModule, on_delete=models.CASCADE, related_name='themes')
+
+    class Meta:
+        ordering = ['created_at']
 
     def __str__(self):
         return self.title_uz
@@ -107,6 +120,9 @@ class Teacher(BaseModel):
     linkedin_link = models.URLField(blank=True, null=True)
     twitter_link = models.URLField(blank=True, null=True)
 
+    class Meta:
+        ordering = ['created_at']
+
     def __str__(self):
         return self.full_name
     
@@ -151,6 +167,9 @@ class News(BaseModel):
     banner = models.ImageField(upload_to='news_banners/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'webp'])])
     status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='news', null=True, blank=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return self.title_uz
 
@@ -162,6 +181,9 @@ class CourseAbout(BaseModel):
     description_uz = models.TextField()
     description_en = models.TextField()
     description_ru = models.TextField()
+
+    class Meta:
+        ordering = ['created_at']
 
     def __str__(self):
         return self.title_uz
@@ -176,6 +198,9 @@ class EducationAbout(BaseModel):
     description_en = models.TextField()
     description_ru = models.TextField()
 
+    class Meta:
+        ordering = ['created_at']
+
     def __str__(self):
         return self.title_uz
     
@@ -185,6 +210,9 @@ class ContactMessage(models.Model):
     phone_number = models.CharField(max_length=20)
     course = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
 
     def __str__(self):
         return f"{self.name} - {self.course}"
