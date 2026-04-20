@@ -21,7 +21,7 @@ from drf_spectacular.utils import extend_schema
 
 
 class ContactMessageThrottle(AnonRateThrottle):
-    rate = '2/hour'
+    rate = '1/hour'
 
 
 class StatisticsAPIView(APIView):
