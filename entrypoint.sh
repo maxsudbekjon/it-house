@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-export $(grep -v '^#' .env | xargs)
+set -a
+source .env
+set +a
 
 echo "waiting PostgreSQL..."
 while ! nc -z db $POSTGRES_PORT; do
