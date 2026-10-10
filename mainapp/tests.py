@@ -1,5 +1,6 @@
 from unittest import mock
 
+import requests
 from django.core.cache import cache
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -67,3 +68,30 @@ class ContactMessageAPITests(APITestCase):
         self.assertIn('message', response.data)
         self.assertFalse(ContactMessage.objects.exists())
         self.telegram_post.assert_not_called()
+
+    def test_telegram_is_called_with_timeout(self):
+        self.client.post(CONTACT_URL, self.payload(), format='json')
+
+        self.assertTrue(self.telegram_post.call_args.kwargs.get('timeout'))
+
+    def test_telegram_network_error_does_not_break_request_or_leak_token(self):
+        token = 'secret-bot-token'
+        self.telegram_post.side_effect = requests.ConnectionError(f'Max retries exceeded with url: /bot{token}/sendMessage')
+
+        with mock.patch('mainapp.utils.BOT_TOKEN', token), self.assertLogs('mainapp.utils', 'ERROR') as logs:
+            response = self.client.post(CONTACT_URL, self.payload(), format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(ContactMessage.objects.exists())
+        self.assertNotIn(token, '\n'.join(logs.output))
+
+    def test_telegram_error_response_is_logged(self):
+        self.telegram_post.return_value.ok = False
+        self.telegram_post.return_value.status_code = 400
+        self.telegram_post.return_value.text = '{"ok":false,"description":"Bad Request: chat not found"}'
+
+        with self.assertLogs('mainapp.utils', 'ERROR') as logs:
+            response = self.client.post(CONTACT_URL, self.payload(), format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn('chat not found', logs.output[0])
