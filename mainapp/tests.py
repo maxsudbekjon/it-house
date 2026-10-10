@@ -1,7 +1,12 @@
+from unittest import mock
+
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from mainapp.models import Teacher
+from mainapp.models import ContactMessage, Teacher
+
+CONTACT_URL = '/api/contact/'
 
 
 class TeacherPermissionTests(APITestCase):
@@ -18,3 +23,47 @@ class TeacherPermissionTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.teacher.refresh_from_db()
         self.assertEqual(self.teacher.full_name, 'John Doe')
+
+
+class ContactMessageAPITests(APITestCase):
+    def setUp(self):
+        # ContactMessageThrottle allows one request per hour and keeps its history in the cache
+        cache.clear()
+        patcher = mock.patch('mainapp.utils.requests.post')
+        self.telegram_post = patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def payload(self, **overrides):
+        data = {'name': 'Ali', 'phone_number': '+998901234567', 'course': 'Backend'}
+        data.update(overrides)
+        return data
+
+    def test_message_is_saved_and_sent_to_telegram(self):
+        response = self.client.post(CONTACT_URL, self.payload(message='Kechki guruh bormi?'), format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['message'], 'Kechki guruh bormi?')
+        self.assertEqual(ContactMessage.objects.get().message, 'Kechki guruh bormi?')
+        self.assertIn('\nMessage: Kechki guruh bormi?', self.telegram_post.call_args.kwargs['data']['text'])
+
+    def test_message_is_optional(self):
+        for value in ({}, {'message': None}, {'message': ''}):
+            with self.subTest(value=value):
+                cache.clear()
+                response = self.client.post(CONTACT_URL, self.payload(**value), format='json')
+
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+                self.assertNotIn('\nMessage:', self.telegram_post.call_args.kwargs['data']['text'])
+
+    def test_message_up_to_limit_is_accepted(self):
+        response = self.client.post(CONTACT_URL, self.payload(message='a' * 1000), format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_message_over_limit_is_rejected(self):
+        response = self.client.post(CONTACT_URL, self.payload(message='a' * 1001), format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('message', response.data)
+        self.assertFalse(ContactMessage.objects.exists())
+        self.telegram_post.assert_not_called()

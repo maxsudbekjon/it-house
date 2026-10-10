@@ -468,7 +468,8 @@ class ContactMessageAPIView(APIView):
         sent_to_telegram(
             contact.name,
             contact.phone_number,
-            contact.course
+            contact.course,
+            contact.message
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

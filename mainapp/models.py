@@ -209,6 +209,7 @@ class ContactMessage(models.Model):
     name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     course = models.CharField(max_length=255, blank=True, null=True)
+    message = models.CharField(max_length=1000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
