@@ -46,8 +46,16 @@ class ModuleThemeAdmin(admin.ModelAdmin):
 
 @admin.register(Statistics)
 class StatisticsAdmin(admin.ModelAdmin):
-    list_display = ('total_students', 'total_graduates', 'total_employed', 'employment_rate', 'avg_duration',
-                    'avg_start_salary', 'partners')
+    list_display = ('total_students', 'total_graduates', 'total_employed', 'employment_rate',
+                    'overall_employment_rate', 'avg_duration', 'avg_start_salary', 'partners')
+    readonly_fields = ('overall_employment_rate',)
+
+    # Shown next to employment_rate so the admin can spot figures that contradict each other on the site
+    @admin.display(description='Overall employment rate, %')
+    def overall_employment_rate(self, obj):
+        if not obj.total_graduates:
+            return '-'
+        return round(obj.total_employed * 100 / obj.total_graduates)
 
 
 @admin.register(Company)

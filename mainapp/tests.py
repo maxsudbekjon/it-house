@@ -1,12 +1,14 @@
 from unittest import mock
 
 import requests
+from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db import IntegrityError, transaction
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from mainapp.admin import StatisticsAdmin
 from mainapp.models import ContactMessage, Course, Statistics, Teacher
 
 CONTACT_URL = '/api/contact/'
@@ -196,3 +198,10 @@ class StatisticsAPITests(APITestCase):
         self.assertContains(response, 'Ensure this value is less than or equal to 100.')
         self.statistics.refresh_from_db()
         self.assertEqual(self.statistics.employment_rate, 40)
+
+    def test_admin_shows_overall_employment_rate_next_to_employment_rate(self):
+        statistics_admin = StatisticsAdmin(Statistics, admin.site)
+
+        self.assertEqual(statistics_admin.overall_employment_rate(self.statistics), 45)
+        self.statistics.total_graduates = 0
+        self.assertEqual(statistics_admin.overall_employment_rate(self.statistics), '-')

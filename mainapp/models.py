@@ -80,7 +80,8 @@ class Statistics(BaseModel):
     employment_rate = models.PositiveSmallIntegerField(
         default=0,
         validators=[MaxValueValidator(100)],
-        help_text="Percentage of graduates employed within 3 months after graduation (0-100)",
+        help_text="Percentage of graduates employed within 3 months after graduation (0-100). "
+                  "For the same graduates it cannot exceed the overall employment rate.",
     )
 
     class Meta:
