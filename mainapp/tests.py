@@ -1,11 +1,13 @@
 from unittest import mock
 
 import requests
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.db import IntegrityError, transaction
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from mainapp.models import ContactMessage, Teacher
+from mainapp.models import ContactMessage, Course, Statistics, Teacher
 
 CONTACT_URL = '/api/contact/'
 
@@ -95,3 +97,102 @@ class ContactMessageAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('chat not found', logs.output[0])
+
+
+def make_course(title='Backend'):
+    return Course.objects.create(
+        banner='course_banners/x.jpg', title_uz=title, title_en=title, title_ru=title,
+        description_uz='.', description_en='.', description_ru='.', duration=6,
+    )
+
+
+class StatisticsAPITests(APITestCase):
+    def setUp(self):
+        self.statistics = Statistics.objects.create(
+            total_students=3000, total_graduates=2200, total_employed=1000,
+            avg_duration=7, avg_start_salary=300, partners=3, employment_rate=40,
+        )
+        self.url = f'/api/statistics/{self.statistics.id}/'
+        make_course('Backend')
+        make_course('Frontend')
+
+    def as_superuser(self):
+        admin = get_user_model().objects.create_superuser(username='admin', password='pass')
+        self.client.force_authenticate(admin)
+
+    def test_list_returns_employment_rate_and_total_directions(self):
+        response = self.client.get('/api/statistics/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['employment_rate'], 40)
+        self.assertEqual(response.data[0]['total_directions'], 2)
+
+    def test_total_directions_follows_course_count(self):
+        make_course('Design')
+        self.assertEqual(self.client.get(self.url).data['total_directions'], 3)
+
+        Course.objects.filter(title_uz='Design').delete()
+        self.assertEqual(self.client.get(self.url).data['total_directions'], 2)
+
+    def test_employment_rate_defaults_to_zero(self):
+        statistics = Statistics.objects.create(
+            total_students=1, total_graduates=1, total_employed=1, avg_duration=1, avg_start_salary=1, partners=1,
+        )
+
+        self.assertEqual(statistics.employment_rate, 0)
+
+    def test_superuser_can_update_employment_rate(self):
+        self.as_superuser()
+
+        for value in (0, 100):
+            with self.subTest(value=value):
+                response = self.client.patch(self.url, {'employment_rate': value}, format='json')
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.statistics.refresh_from_db()
+                self.assertEqual(self.statistics.employment_rate, value)
+
+    def test_employment_rate_must_be_integer_from_0_to_100(self):
+        self.as_superuser()
+
+        for value in (-1, 101, 97.5, 'abc'):
+            with self.subTest(value=value):
+                response = self.client.patch(self.url, {'employment_rate': value}, format='json')
+
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                self.assertIn('employment_rate', response.data)
+        self.statistics.refresh_from_db()
+        self.assertEqual(self.statistics.employment_rate, 40)
+
+    def test_total_directions_is_read_only(self):
+        self.as_superuser()
+
+        response = self.client.patch(self.url, {'total_directions': 50}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['total_directions'], 2)
+
+    def test_anonymous_cannot_update_employment_rate(self):
+        response = self.client.patch(self.url, {'employment_rate': 99}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_database_rejects_employment_rate_over_100(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Statistics.objects.filter(id=self.statistics.id).update(employment_rate=101)
+
+    def test_admin_shows_and_validates_employment_rate(self):
+        admin = get_user_model().objects.create_superuser(username='admin', password='pass')
+        self.client.force_login(admin)
+        change_url = f'/admin-page-locked/mainapp/statistics/{self.statistics.id}/change/'
+
+        self.assertContains(self.client.get('/admin-page-locked/mainapp/statistics/'), 'employment_rate')
+        response = self.client.post(change_url, {
+            'total_students': 3000, 'total_graduates': 2200, 'total_employed': 1000,
+            'avg_duration': 7, 'avg_start_salary': 300, 'partners': 3, 'employment_rate': 101,
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, 'Ensure this value is less than or equal to 100.')
+        self.statistics.refresh_from_db()
+        self.assertEqual(self.statistics.employment_rate, 40)

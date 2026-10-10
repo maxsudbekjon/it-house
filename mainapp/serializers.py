@@ -56,9 +56,15 @@ class CourseListSerializer(serializers.ModelSerializer):
 
 
 class StatisticsSerializer(serializers.ModelSerializer):
+    total_directions = serializers.SerializerMethodField()
+
     class Meta:
         model = Statistics
         fields = '__all__'
+
+    def get_total_directions(self, obj) -> int:
+        # Every course on the site is a separate direction
+        return Course.objects.count()
 
     
 class TeacherAchievementSerializer(serializers.ModelSerializer):

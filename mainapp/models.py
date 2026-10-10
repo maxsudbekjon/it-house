@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator
 
 
 class BaseModel(models.Model):
@@ -77,6 +77,19 @@ class Statistics(BaseModel):
     avg_duration = models.FloatField(help_text="Average course duration in months")
     avg_start_salary = models.FloatField(help_text="Average starting salary after course completion")
     partners = models.PositiveIntegerField()
+    employment_rate = models.PositiveSmallIntegerField(
+        default=0,
+        validators=[MaxValueValidator(100)],
+        help_text="Percentage of graduates employed within 3 months after graduation (0-100)",
+    )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(employment_rate__lte=100),
+                name='statistics_employment_rate_lte_100',
+            ),
+        ]
 
 
 class Company(BaseModel):

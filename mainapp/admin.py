@@ -46,8 +46,8 @@ class ModuleThemeAdmin(admin.ModelAdmin):
 
 @admin.register(Statistics)
 class StatisticsAdmin(admin.ModelAdmin):
-    list_display = ('total_students', 'total_graduates', 'total_employed', 'avg_duration', 'avg_start_salary',
-                    'partners')
+    list_display = ('total_students', 'total_graduates', 'total_employed', 'employment_rate', 'avg_duration',
+                    'avg_start_salary', 'partners')
 
 
 @admin.register(Company)
